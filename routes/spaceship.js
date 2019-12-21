@@ -11,16 +11,68 @@ const MONGODB_COLLEC = 'spaceship';
 
 
 /**
- * @GET | GET Spaceship
+ * @GET | GET all spaceships
  *
- * @Route("/all")
+ * @Route("/getAll")
  */
-router.get('/all', async function(req, res, next) {
+router.get('/getAll', async function(req, res, next) {
 
     const client = new MongoClient(MONGODB_URI);
     client.connect().then(async function(response) {
        const db = client.db(MONGODB_DBNAME);
        const spaceships = await db.collection(MONGODB_COLLEC).find().toArray();
+
+        client.close();
+        res.status(200).send({
+            error: null,
+            spaceships: spaceships
+        });
+    }).catch(function (error) {
+        console.log("Error server " + error.stack);
+        res.status(500).send({
+            error: error.stack,
+            spaceships: []
+        });
+    });
+});
+
+/**
+ * @GET | GET spaceship by id
+ *
+ * @Route("/getById")
+ */
+router.post('/getById', async function(req, res, next) {
+
+    const client = new MongoClient(MONGODB_URI);
+    client.connect().then(async function(response) {
+        const db = client.db(MONGODB_DBNAME);
+        const spaceships = await db.collection(MONGODB_COLLEC).find({_id: ObjectId(req.body._id)}).toArray();
+        client.close();
+        res.status(200).send({
+            error: null,
+            spaceships: spaceships
+        });
+    }).catch(function (error) {
+        console.log("Error server " + error.stack);
+        res.status(500).send({
+            error: error.stack,
+            spaceships: []
+        });
+    });
+});
+
+/**
+ * @GET | GET spaceship by element(s)
+ *
+ * @Route("/getByElement")
+ */
+router.post('/getByElement', async function(req, res, next) {
+
+    const client = new MongoClient(MONGODB_URI);
+    console.log(req.body)
+    client.connect().then(async function(response) {
+        const db = client.db(MONGODB_DBNAME);
+        const spaceships = await db.collection(MONGODB_COLLEC).find(req.body).toArray();
 
         client.close();
         res.status(200).send({
@@ -60,6 +112,7 @@ router.post('/add', async function(req, res){
             } else {
                 const newSpaceship = {
                     name: name,
+                    speed: 1,
                     createdAt: dateNow(),
                 };
                 await db.collection(MONGODB_COLLEC).insertOne(newSpaceship);
@@ -69,6 +122,7 @@ router.post('/add', async function(req, res){
                     error: null,
                     _id: ObjectId(spaceshipInDb[0]._id),
                     name: spaceshipInDb[0].name,
+                    speed: 1,
                     createdAt: spaceshipInDb[0].createdAt
                 });
             }
