@@ -105,6 +105,7 @@ router.post('/add', async function(req, res){
     const passengers = req.body.passengers;
     const cargoCapacity = req.body.cargoCapacity;
     const speed = req.body.speed;
+    const hp = req.body.hp;
     const spaceshipClass = req.body.spaceshipClass;
     const pilots = req.body.pilots;
     const films = req.body.films;
@@ -131,6 +132,7 @@ router.post('/add', async function(req, res){
                     passengers: passengers,
                     cargoCapacity: cargoCapacity,
                     speed: speed,
+                    hp: hp,
                     spaceshipClass: spaceshipClass,
                     pilots: pilots,
                     films: films,
