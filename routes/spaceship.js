@@ -69,7 +69,7 @@ router.post('/getById', async function(req, res, next) {
 router.post('/getByElement', async function(req, res, next) {
 
     const client = new MongoClient(MONGODB_URI);
-    console.log(req.body)
+    console.log(req.body);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
         const spaceships = await db.collection(MONGODB_COLLEC).find(req.body).toArray();
@@ -109,6 +109,7 @@ router.post('/add', async function(req, res){
     const spaceshipClass = req.body.spaceshipClass;
     const pilots = req.body.pilots;
     const films = req.body.films;
+    const img = req.body.img;
 
     const client = new MongoClient(MONGODB_URI);
     client.connect()
@@ -136,6 +137,7 @@ router.post('/add', async function(req, res){
                     spaceshipClass: spaceshipClass,
                     pilots: pilots,
                     films: films,
+                    img: img,
                     createdAt: dateNow()
                 };
                 await db.collection(MONGODB_COLLEC).insertOne(newSpaceship);
