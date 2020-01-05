@@ -46,10 +46,22 @@ function formatDigits(number){
     return number;
 }
 
+/**
+ *
+ * @param min
+ * @param max
+ * @returns {number}
+ */
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 module.exports = {
     MONGODB_URI,
     MONGODB_DBNAME,
     MongoClient,
     dateNow,
+    getRandomInt,
 };

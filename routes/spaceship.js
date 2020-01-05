@@ -2,6 +2,7 @@ const {MONGODB_URI} = require('../tools');
 const {MONGODB_DBNAME} = require('../tools');
 const {MongoClient} = require('../tools');
 const {dateNow} = require('../tools');
+const {getRandomInt} = require('../tools');
 const ObjectId = require('mongodb').ObjectId;
 
 
@@ -35,6 +36,33 @@ router.get('/getAll', async function(req, res, next) {
         });
     });
 });
+
+
+/**
+ * @GET | GET one random spaceship
+ *
+ * @Route("/getRandom")
+ */
+router.get('/getRandom', async function(req, res, next) {
+
+    const client = new MongoClient(MONGODB_URI);
+    client.connect().then(async function(response) {
+        const db = client.db(MONGODB_DBNAME);
+        const spaceships = await db.collection(MONGODB_COLLEC).find().toArray();
+        client.close();
+        res.status(200).send({
+            error: null,
+            spaceships: spaceships[getRandomInt(0, spaceships.length-1)]
+        });
+    }).catch(function (error) {
+        console.log("Error server " + error.stack);
+        res.status(500).send({
+            error: error.stack,
+            spaceships: []
+        });
+    });
+});
+
 
 /**
  * @GET | GET spaceship by id
@@ -189,6 +217,5 @@ router.delete('/DROP', async function(req, res, next) {
         });
     });
 });
-
 
 module.exports = router;
